@@ -36,6 +36,19 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+// realizar o delete para excluir uma task
+app.delete("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        const deletedTask = await TaskModel.findByIdAndDelete(taskId);
+
+        res.status(200).send(deletedTask);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 app.listen(8000, () => {
     console.log("Listening on port 8000!");
 });
