@@ -51,6 +51,37 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+// rota para atualizat uma task
+app.patch("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const taskData = req.body;
+
+        //pegou a tarefa
+        const taskToUpdate = await TaskModel.findById(taskId);
+
+        //campos que pode ser atualizado
+        const allowedUpdates = ["isCompleted"];
+
+        // capos que o usuario está tentando atualizar
+        const requestedUpdate = Object.keys(req.body);
+
+        // para cada campo recebido no body, verifica de o campo inclui o campo permitido
+        for (update of requestedUpdate) {
+            if (allowedUpdates.includes(update)) {
+                taskToUpdate[update] = taskData[update];
+            } else {
+                return res.status(500).send("Campo não são editaveis");
+            }
+        }
+
+        await taskToUpdate.save();
+        return res.status(200).send(taskToUpdate);
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+});
+
 // realizar o delete para excluir uma task
 app.delete("/tasks/:id", async (req, res) => {
     try {
