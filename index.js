@@ -25,6 +25,21 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
+// rota para buscar
+app.get("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+        const task = await TaskModel.findById(taskId);
+
+        if (!task) {
+            return res.status(404).send("Task não encontrada.");
+        }
+        return res.status(200).send(task);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 // realizar o post para criar uma task
 app.post("/tasks", async (req, res) => {
     try {
@@ -44,6 +59,10 @@ app.delete("/tasks/:id", async (req, res) => {
         const deletedTask = await TaskModel.findByIdAndDelete(taskId);
 
         res.status(200).send(deletedTask);
+
+        if (!deletedTask) {
+            return res.status(404).send("Task não encontrada!");
+        }
     } catch (error) {
         res.status(500).send(error.message);
     }
