@@ -1,19 +1,13 @@
 const express = require("express");
+
+const TaskController = require("../controllers/task.controller");
 const TaskModel = require("../models/task.model");
 
 const router = express.Router();
 
 // realizar o get na rota "/"
 router.get("/", async (req, res) => {
-    try {
-        // Buscando as tasks no banco de dados
-        const tasks = await TaskModel.find({});
-        // Respondendo com as tasks encontradas
-        res.status(200).send(tasks);
-    } catch (error) {
-        // Se ocorrer algum erro, responder com erro
-        res.status(500).send({ message: "Erro ao buscar tarefas", error });
-    }
+    return new TaskController(req, res).getTasks();
 });
 
 // rota para buscar
